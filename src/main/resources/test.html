@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+Count: <label id="count"></label>
+
+<p id="demo"></p>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+  function createCountSource() {
+    var source = new EventSource("http://localhost:8080/post");
+    source.addEventListener('message', function (e) {
+      var body = JSON.parse(e.data);
+      $("#count").text(body);
+      // You can close the re-connection attempt
+      // if(body === 5)
+      //     source.close();
+    }, false);
+
+    return source;
+  }
+
+  $(document).ready(function () {
+    source = createCountSource();
+  });
+</script>
+
+</body>
+</html>
