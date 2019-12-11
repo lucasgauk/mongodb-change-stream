@@ -39,10 +39,9 @@ public class PostServiceImpl implements PostService {
     }
 
     public Mono<Post> addComment(Comment comment, String postId) {
-        return this.find(postId).map(post -> {
+        return this.find(postId).flatMap(post -> {
             post.getComments().add(comment);
-            this.save(post);
-            return post;
+            return this.save(post);
         });
     }
 
