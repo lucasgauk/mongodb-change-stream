@@ -50,10 +50,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public Flux<Post> subscribe(String postId) {
-        Aggregation fluxAggregation = newAggregation(match(where("operationType")
-                                                               .is("update")
-                                                               .and("fullDocument._id")
-                                                               .is(new ObjectId(postId))));
+        Aggregation fluxAggregation = newAggregation(match(where("fullDocument._id").is(new ObjectId(postId))));
 
         ChangeStreamOptions options = ChangeStreamOptions.builder()
                                                          .returnFullDocumentOnUpdate()
