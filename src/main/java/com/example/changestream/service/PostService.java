@@ -1,18 +1,19 @@
 package com.example.changestream.service;
 
-import com.example.changestream.domain.Comment;
-import com.example.changestream.domain.Post;
+import com.example.changestream.domain.post.Comment;
+import com.example.changestream.domain.post.Post;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface PostService {
 
-    Post save(Post post);
+    Mono<Post> save(Post post);
 
     Flux<Post> findAll();
 
-    Post addComment(Comment comment, String postId);
+    Mono<Post> addComment(Comment comment, String postId);
 
-    Post find(String postId);
+    Mono<Post> find(String postId);
 
     Flux<Post> subscribe(String postId);
 }
