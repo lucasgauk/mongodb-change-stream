@@ -4,26 +4,28 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.matc
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-import com.example.changestream.domain.Comment;
-import com.example.changestream.domain.Post;
-import com.example.changestream.domain.PostRepository;
+import com.example.changestream.domain.post.Comment;
+import com.example.changestream.domain.post.Post;
+import com.example.changestream.domain.post.PostRepository;
 import com.example.changestream.service.PostService;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class PostServiceImpl implements PostService {
 
     private final PostRepository repository;
-    private final ReactiveMongoOperations reactiveTemplate;
+    private final ReactiveMongoTemplate reactiveTemplate;
 
     public PostServiceImpl(PostRepository repository,
-                           ReactiveMongoOperations reactiveTemplate) {
+                           ReactiveMongoTemplate reactiveTemplate) {
         this.repository = repository;
         this.reactiveTemplate = reactiveTemplate;
     }
@@ -52,7 +54,7 @@ public class PostServiceImpl implements PostService {
     public Flux<Post> subscribe(String postId) {
         Aggregation fluxAggregation = newAggregation(match(where("operationType")
                                                                .is("update")
-                                                               .and("updateDescription.updatedFields._id")
+                                                               .and("fullDocument._id")
                                                                .is(new ObjectId(postId))));
 
         ChangeStreamOptions options = ChangeStreamOptions.builder()

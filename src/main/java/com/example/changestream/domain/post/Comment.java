@@ -1,4 +1,4 @@
-package com.example.changestream.domain;
+package com.example.changestream.domain.post;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

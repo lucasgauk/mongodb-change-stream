@@ -1,9 +1,9 @@
 package com.example.changestream.controller;
 
-import com.example.changestream.domain.Comment;
-import com.example.changestream.domain.CommentRequest;
-import com.example.changestream.domain.Post;
-import com.example.changestream.domain.PostRequest;
+import com.example.changestream.domain.post.Comment;
+import com.example.changestream.domain.post.CommentRequest;
+import com.example.changestream.domain.post.Post;
+import com.example.changestream.domain.post.PostRequest;
 import com.example.changestream.service.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,7 +26,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping(produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Post> findAll() {
         return this.postService.findAll();
     }
@@ -36,12 +36,12 @@ public class PostController {
         return this.postService.find(id);
     }
 
-    @GetMapping("/{id}/subscribe")
+    @GetMapping(path = "/{id}/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Post> subscribe(@PathVariable String id) {
         return this.postService.subscribe(id);
     }
 
-    @PostMapping(value = "/{id}/comment", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping("/{id}/comment")
     public Post comment(@RequestBody CommentRequest request, @PathVariable String id) {
         return this.postService.addComment(Comment.from(request), id);
     }

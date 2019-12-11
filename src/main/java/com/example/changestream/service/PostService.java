@@ -1,7 +1,7 @@
 package com.example.changestream.service;
 
-import com.example.changestream.domain.Comment;
-import com.example.changestream.domain.Post;
+import com.example.changestream.domain.post.Comment;
+import com.example.changestream.domain.post.Post;
 import reactor.core.publisher.Flux;
 
 public interface PostService {
