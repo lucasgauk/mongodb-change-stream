@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/post")
@@ -26,13 +27,13 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping
     public Flux<Post> findAll() {
         return this.postService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Post find(@PathVariable String id) {
+    public Mono<Post> find(@PathVariable String id) {
         return this.postService.find(id);
     }
 
@@ -42,14 +43,13 @@ public class PostController {
     }
 
     @PostMapping("/{id}/comment")
-    public Post comment(@RequestBody CommentRequest request, @PathVariable String id) {
+    public Mono<Post> comment(@RequestBody CommentRequest request, @PathVariable String id) {
         return this.postService.addComment(Comment.from(request), id);
     }
 
     @PostMapping("/create")
-    public Post create(@RequestBody PostRequest postRequest) {
+    public Mono<Post> create(@RequestBody PostRequest postRequest) {
         return this.postService.save(Post.from(postRequest));
     }
-
 
 }

@@ -16,8 +16,8 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-@Slf4j
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -30,25 +30,24 @@ public class PostServiceImpl implements PostService {
         this.reactiveTemplate = reactiveTemplate;
     }
 
-    public Post save(Post post) {
-        return this.repository.save(post).block();
+    public Mono<Post> save(Post post) {
+        return this.repository.save(post);
     }
 
     public Flux<Post> findAll() {
         return this.repository.findAll();
     }
 
-    public Post addComment(Comment comment, String postId) {
-        Post post = this.find(postId);
-        if (post != null) {
+    public Mono<Post> addComment(Comment comment, String postId) {
+        return this.find(postId).map(post -> {
             post.getComments().add(comment);
-            return this.save(post);
-        }
-        return null;
+            this.save(post);
+            return post;
+        });
     }
 
-    public Post find(String postId) {
-        return this.repository.findById(postId).block();
+    public Mono<Post> find(String postId) {
+        return this.repository.findById(postId);
     }
 
     public Flux<Post> subscribe(String postId) {
